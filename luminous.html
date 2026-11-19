@@ -1,0 +1,1392 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luminous — Rencana proyek, disusun AI pilihanmu</title>
+<!-- v: clarify-redesign-3-single-col -->
+<meta name="description" content="Ubah ide jadi rencana proyek (plan.md) siap dipakai coding agent. Pakai provider AI-mu sendiri — bring your own key.">
+<link rel="icon" href="/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Luminous — bahasa visual mengikuti curated.design
+   Token, radius, ring, dan tipografi disalin dari situs aslinya.
+   ============================================================ */
+:root{
+  --font-sans:"Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-display:"Google Sans","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  --color-white:#fff;
+  --color-base-50:#f1f1f0;
+  --color-base-100:#e8e8e6;
+  --color-base-200:#dcdcd9;
+  --color-base-300:#c4c3be;
+  --color-base-400:#a3a29d;
+  --color-base-500:#85847e;
+  --color-base-600:#6a6964;
+  --color-base-700:#5c5b56;
+  --color-base-800:#3c3b37;
+  --color-base-900:#17181a;
+  --color-base-950:#0e0f11;
+  --color-ok:#3ba55d;
+  --color-err:#d64545;
+  --radius-card:1.75rem;
+
+  /* -- motion tokens: easing & durasi konsisten seluruh situs -- */
+  --ease-out:  cubic-bezier(.16,1,.3,1);      /* expo-out: decel panjang, feel premium */
+  --ease-soft: cubic-bezier(.25,1,.5,1);      /* quint-out untuk microinteraction */
+  --ease-spring: cubic-bezier(.34,1.56,.64,1); /* overshoot tipis untuk elemen kecil */
+  --dur-fast:  200ms;
+  --dur-base:  420ms;
+  --dur-slow:  840ms;
+  --dist-sm:   10px;    /* jarak gerak kecil */
+  --dist-md:   24px;    /* jarak gerak sedang */
+  --ring:inset 0 0 0 1px #17181a1f;
+  --ring-soft:0 0 0 1px #17181a12;
+  --ring-strong:0 0 0 1px #17181a2b,0 1px 3px #17181a1a;
+  color-scheme:light;
+}
+html.dark{
+  --color-white:#1c1d1f;
+  --color-base-50:#242527;
+  --color-base-100:#2c2d30;
+  --color-base-200:#38393c;
+  --color-base-300:#4a4b4f;
+  --color-base-400:#74757a;
+  --color-base-500:#8f9095;
+  --color-base-600:#a9aaaf;
+  --color-base-700:#bcbdc2;
+  --color-base-800:#d6d7db;
+  --color-base-900:#f2f2f3;
+  --color-base-950:#fafafa;
+  --ring:inset 0 0 0 1px #ffffff1f;
+  --ring-soft:0 0 0 1px #ffffff14;
+  --ring-strong:0 0 0 1px #ffffff2b,0 1px 3px #0000004d;
+  color-scheme:dark;
+}
+*,::before,::after{box-sizing:border-box;border:0 solid;margin:0;padding:0}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;line-height:1.5;font-family:var(--font-sans)}
+body{background:var(--color-white);color:var(--color-base-900);font-size:1rem}
+img,svg{display:block;vertical-align:middle}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;background:none;font:inherit;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+.icon{width:1rem;height:1rem;flex-shrink:0}
+.mono{font-family:var(--font-mono)}
+.font-display{font-family:var(--font-display)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{max-width:72rem;margin-inline:auto;padding-inline:1.25rem}
+kbd{font-family:var(--font-sans);font-size:.6875rem;color:var(--color-base-700);background:var(--color-base-50);border-radius:.375rem;padding:.125rem .375rem;box-shadow:var(--ring)}
+
+/* ================= nav ================= */
+.site-nav{position:fixed;inset-inline:0;top:0;z-index:40;background:var(--color-white);box-shadow:0 1px 0 #17181a0d}
+.site-nav-inner{display:flex;height:3.5rem;align-items:center;gap:.75rem}
+.brand{display:flex;align-items:center;gap:.625rem;font-weight:600;font-size:.9375rem;letter-spacing:-.01em}
+.brand-logo{display:inline-block;height:1rem;width:auto;object-fit:contain}
+.brand-logo,.newsletter-logo{filter:invert(1)}
+html.dark .brand-logo,html.dark .newsletter-logo{filter:none}
+.brand-tag{white-space:nowrap;font-size:.6875rem;font-weight:500;color:var(--color-base-500);background:var(--color-base-50);border-radius:999px;padding:.25rem .625rem}
+@media(max-width:640px){.brand-tag,.nav-link[data-hide-sm]{display:none}}
+@media(max-width:380px){.site-nav-inner{gap:.5rem}.nav-status{padding:.5rem}.nav-status #healthText{display:none}}
+.nav-spacer{flex:1}
+.nav-status{display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;font-size:.8125rem;font-weight:500;color:var(--color-base-600);background:var(--color-white);border-radius:999px;padding:.4375rem .875rem;box-shadow:var(--ring)}
+.status-dot{width:.4375rem;height:.4375rem;border-radius:999px;background:var(--color-base-300);flex-shrink:0}
+.status-dot.ok{background:var(--color-ok)}
+.status-dot.err{background:var(--color-err)}
+.nav-icon{display:inline-flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:999px;color:var(--color-base-600);transition:background .15s,color .15s;flex-shrink:0}
+.nav-icon:hover{background:var(--color-base-50);color:var(--color-base-900)}
+
+/* ================= hero ================= */
+.hero-head{max-width:48rem;margin-inline:auto;padding:8rem 1.25rem 0;text-align:center}
+@media(min-width:1024px){.hero-head{padding-top:10rem}}
+.hero-pill{white-space:nowrap;color:var(--color-base-900);background:var(--color-white);border-radius:999px;align-items:center;gap:.5rem;padding:.625rem 1rem;font-size:.875rem;font-weight:500;line-height:1.2;display:inline-flex;box-shadow:var(--ring)}
+.hero-pill-dot{width:.5rem;height:.5rem;border-radius:999px;background:var(--color-ok);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-title{color:var(--color-base-900);font-size:clamp(2.375rem,1.6rem + 3vw,3.25rem);line-height:1.04;font-weight:600;letter-spacing:-.025em;margin-top:1.5rem}
+.hero-sub{text-wrap:balance;max-width:34rem;color:var(--color-base-600);margin-inline:auto;font-size:1.0625rem;font-weight:450;line-height:1.55;margin-top:1.125rem}
+.hero-sub b{color:var(--color-base-900);font-weight:600}
+
+/* ================= composer (prompt box) =================
+   Pola produk AI modern: panel besar, textarea lega, bar aksi
+   terpisah dengan divider tipis. Semua ukuran di grid 4px. */
+.design-chat{max-width:44rem;margin-inline:auto;margin-top:2.5rem;padding-inline:1.25rem}
+.chat-form{display:flex;flex-direction:column;gap:0;background:var(--color-base-50);border-radius:1.25rem;padding:.875rem .875rem .75rem;box-shadow:var(--ring-soft);transition:background-color .2s,box-shadow .25s var(--ease-soft)}
+.chat-form:focus-within{background:var(--color-white);box-shadow:var(--ring-strong)}
+.chat-input{display:block;width:100%;min-height:3.5rem;max-height:13rem;resize:none;background:transparent;border:0;outline:0;padding:.375rem .5rem .5rem;font-family:var(--font-sans);font-size:1.0625rem;font-weight:450;line-height:1.6;letter-spacing:-.006em;color:var(--color-base-900);overflow-y:auto;scrollbar-width:thin}
+.chat-input::placeholder{color:var(--color-base-500)}
+.chat-bar{display:flex;align-items:center;gap:.75rem;border-top:1px solid var(--color-base-100);padding-top:.625rem}
+.chat-meta{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--color-base-500);white-space:nowrap}
+.chat-count{font-size:.6875rem;color:var(--color-base-400);font-variant-numeric:tabular-nums;letter-spacing:.02em;transition:color var(--dur-fast)}
+.chat-count.warn{color:var(--color-err)}
+.chat-submit{margin-left:auto;height:2.75rem;padding:0 1.125rem;color:var(--color-white);background:var(--color-base-900);border-radius:.875rem;align-items:center;justify-content:center;gap:.5rem;font-size:.875rem;font-weight:500;letter-spacing:-.01em;transition:opacity var(--dur-fast),transform var(--dur-fast) var(--ease-spring);display:inline-flex}
+.chat-submit:hover{opacity:.88}
+.chat-submit:active{transform:scale(.96)}
+.chat-submit:disabled{opacity:.4;cursor:default}
+.chat-submit .icon{width:1rem;height:1rem}
+.chat-divider{width:1px;height:.875rem;background:var(--color-base-200);flex-shrink:0}
+@media(max-width:560px){
+  .chat-meta{overflow:hidden}
+  .chat-meta .kbd-hint{display:none}
+  .clarify-card{padding:1.25rem}
+  .opt-grid{display:grid;grid-template-columns:1fr;gap:.5rem}
+  .opt{width:100%;height:auto;min-height:2.75rem;justify-content:flex-start;text-align:left;white-space:normal;line-height:1.35;padding:.625rem .875rem}
+  .opt .tick{display:none}
+  .result-body table{display:block;border-collapse:collapse}
+  .result-body table thead{display:none}
+  .result-body table tbody,.result-body table tr{display:block;width:auto}
+  .result-body table tr{padding:.75rem 0;border-top:1px solid var(--color-base-100)}
+  .result-body table tr:first-child{border-top:0;padding-top:0}
+  .result-body table td{display:grid;grid-template-columns:5.5rem 1fr;gap:.625rem;align-items:baseline;border:0;padding:.1875rem 0;margin:0;text-align:left}
+  .result-body table td::before{content:attr(data-label);font-size:.6875rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--color-base-500);line-height:1.45}
+  .result-body table td:first-child{font-weight:500;color:var(--color-base-900)}
+  .result-body table td:empty{display:none}
+}
+.chat-hint{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.375rem;margin-top:1rem;font-size:.75rem;color:var(--color-base-500)}
+.chat-hint .mono{font-size:.6875rem}
+
+/* ================= chips ================= */
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.chip{white-space:nowrap;height:2.25rem;color:var(--color-base-700);background:var(--color-base-50);border-radius:999px;align-items:center;gap:.375rem;padding:0 1rem;font-size:.875rem;font-weight:500;transition:background-color .16s,color .16s,box-shadow .16s,transform .16s cubic-bezier(.28,1.4,.36,1);display:inline-flex}
+.clarify-q .chip{cursor:pointer;border:1px solid transparent}
+.clarify-q .chip:hover{color:var(--color-base-900);box-shadow:var(--ring)}
+  /* ================= tema: cross-fade via View Transitions API ================= */
+  ::view-transition-old(root){animation:vt-out 180ms cubic-bezier(.4,0,1,1) both}
+  ::view-transition-new(root){animation:vt-in 240ms .06s cubic-bezier(.22,1,.36,1) both}
+  @keyframes vt-out{to{opacity:0}}
+  @keyframes vt-in{from{opacity:0}}
+
+
+/* ================= micro-interaction & polish ================= */
+.chip:hover{color:var(--color-base-900)}
+.chip:active{transform:scale(.96)}
+.chip[aria-pressed="true"]{color:var(--color-white);background:var(--color-base-900)}
+.result-card{animation:card-in .28s cubic-bezier(.28,1,.36,1)}
+@keyframes card-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.empty-state{animation:card-in .35s ease-out}
+::selection{background:var(--color-base-900);color:var(--color-white)}
+:focus-visible{outline:2px solid var(--color-base-900);outline-offset:2px;border-radius:.375rem}
+.input:focus-visible,.select:focus-visible,.chat-input:focus-visible{outline:0}
+.btn-err{color:var(--color-err);background:#d6454510;border-radius:.75rem;padding:.875rem 1rem;margin:.5rem 0}
+.btn-err p{margin:0 0 .5rem}
+.btn-err p:last-child{margin:0;color:var(--color-base-600);font-size:.8125rem}
+.newsletter-inner{position:relative}
+.newsletter-inner::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 90% at 50% 0%,#17181a08 0%,transparent 70%);pointer-events:none}
+html.dark .newsletter-inner::before{background:radial-gradient(60% 90% at 50% 0%,#ffffff0a 0%,transparent 70%)}
+
+/* ================= credentials fold ================= */
+.cred-toggle{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;padding:0;font-size:.8125rem;font-weight:500;color:var(--color-base-600);transition:color .15s}
+.cred-toggle:hover{color:var(--color-base-900)}
+.cred-toggle .caret{transition:transform .2s ease}
+.cred-toggle[aria-expanded="true"] .caret{transform:rotate(90deg)}
+.cred-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease,margin .25s ease;margin-top:0}
+.cred-panel.open{grid-template-rows:1fr;margin-top:1.25rem}
+.cred-panel>div{overflow:hidden;min-height:0}
+.cred-status{display:inline-flex;align-items:center;gap:.375rem;font-size:.75rem;color:var(--color-base-500)}
+.cred-status .dot{width:.4375rem;height:.4375rem;border-radius:999px;background:var(--color-base-300)}
+.cred-status .dot.ok{background:var(--color-ok)}
+.cred-status .dot.err{background:var(--color-err)}
+.chip[aria-pressed="true"]{color:var(--color-white);background:var(--color-base-900)}
+
+/* ================= sections ================= */
+.section{padding-block:2.5rem}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.section-title{font-size:1.125rem;font-weight:600;letter-spacing:-.01em;color:var(--color-base-900)}
+@media(min-width:640px){.section-title{font-size:1.25rem}}
+.section-note{font-size:.8125rem;color:var(--color-base-500)}
+
+/* ================= panel (config) ================= */
+.panel{margin-top:1.25rem;background:var(--color-white);border-radius:1.25rem;box-shadow:var(--ring-soft);padding:1.5rem}
+@media(min-width:768px){.panel{padding:1.75rem}}
+.panel-status{display:flex;align-items:center;gap:.625rem;padding-bottom:1.25rem;margin-bottom:1.25rem;border-bottom:1px solid var(--color-base-100);font-size:.8125rem;color:var(--color-base-600)}
+.chat-dot{width:.5rem;height:.5rem;border-radius:999px;background:var(--color-base-300);flex-shrink:0}
+.chat-dot.run{background:var(--color-ok);animation:1.6s ease-out infinite chat-dot-pulse}
+@keyframes chat-dot-pulse{0%{opacity:.25;scale:1}40%{opacity:1;scale:1.25}100%{opacity:.25;scale:1}}
+.grow{flex:1;min-width:0}
+.result-actions{display:flex;align-items:center;gap:.25rem}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:999px;color:var(--color-base-600);transition:background .15s,color .15s;flex-shrink:0}
+.icon-btn:hover{background:var(--color-base-50);color:var(--color-base-900)}
+.icon-btn:disabled{opacity:.4;cursor:default}
+.config-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem}
+@media(min-width:640px){.config-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.field{display:grid;gap:.375rem;align-content:start}
+.field-label{font-size:.75rem;font-weight:500;color:var(--color-base-600)}
+.field-hint{font-size:.75rem;font-weight:450;color:var(--color-base-500);line-height:1.45}
+.field-hint code{font-family:var(--font-mono);font-size:.6875rem;background:var(--color-base-50);border-radius:.25rem;padding:.0625rem .25rem}
+.input,.select{height:2.5rem;border-radius:.625rem;background:var(--color-base-50);padding:0 .875rem;font-size:.875rem;outline:0;border:0;width:100%;transition:background-color .15s,box-shadow .15s}
+.input:focus,.select:focus{background:var(--color-white);box-shadow:var(--ring)}
+.select{appearance:none;cursor:pointer}
+.model-row{display:flex;gap:.5rem}
+.model-row .select{flex:1;min-width:0}
+.btn-mini{white-space:nowrap;height:2.5rem;color:var(--color-base-700);background:var(--color-white);border-radius:.625rem;align-items:center;gap:.375rem;padding:0 .875rem;font-size:.8125rem;font-weight:500;transition:background-color .16s,color .16s;display:inline-flex;box-shadow:var(--ring)}
+.btn-mini:hover{color:var(--color-base-900)}
+.btn-mini:disabled{opacity:.5;cursor:default}
+.range-row{display:flex;align-items:center;gap:.75rem;height:2.5rem}
+.range-row input[type=range]{flex:auto;accent-color:var(--color-base-900)}
+.range-val{font-family:var(--font-mono);font-size:.75rem;color:var(--color-base-600);min-width:3.5rem;text-align:right}
+/* unused but harmless */
+
+/* ================= result ================= */
+.canvas{margin-top:1.25rem;border-radius:var(--radius-card);background:var(--color-base-50);box-shadow:var(--ring-soft);padding:1.25rem;min-height:14rem;scroll-margin-top:4.5rem}
+.result-card{background:var(--color-white);border-radius:1rem;box-shadow:var(--ring-soft);overflow:hidden}
+.result-head{display:flex;align-items:center;gap:.625rem;padding:.875rem 1.25rem;border-bottom:1px solid var(--color-base-100);font-size:.8125rem;font-weight:500;color:var(--color-base-700)}
+/* ================= flow view (subpage clarify + PRD) ================= */
+body[data-view="home"] #result-section{display:none}
+body[data-view="flow"] .hero-head,
+body[data-view="flow"] .design-chat,
+body[data-view="flow"] .newsletter,
+body[data-view="flow"] main > .section:not(#result-section){display:none}
+body[data-view="flow"] #result-section{padding-top:6.5rem}
+body[data-view="flow"] #resultCanvas{background:transparent;box-shadow:none;padding:0;margin-top:1.25rem;min-height:0}
+body[data-view="flow"] .result-body{max-height:none;overflow:visible}
+body[data-view="flow"] .result-card.is-clarify{background:transparent;box-shadow:none;overflow:visible}
+body[data-view="flow"] .result-card.is-clarify .result-head{display:none}
+body[data-view="flow"] .result-body.is-clarify{max-height:none;overflow:visible;padding:0;max-width:48rem;margin-inline:auto;width:100%}
+body[data-view="flow"] .result-body.is-clarify .clarify-card{box-shadow:var(--ring-soft);border-radius:1.25rem}
+body.mode-clarify #result-section .section-head{display:none}
+.flow-form{display:flex;flex-direction:column;gap:.5rem;background:var(--color-base-50);border-radius:1rem;box-shadow:var(--ring-soft);padding:.75rem .75rem .625rem 1rem;margin-bottom:1.25rem;transition:background-color .2s,box-shadow .25s var(--ease-soft)}
+.flow-form:focus-within{background:var(--color-white);box-shadow:var(--ring-strong)}
+.flow-input{width:100%;resize:none;background:transparent;border:0;outline:0;font-family:var(--font-sans);font-size:.9375rem;font-weight:450;line-height:1.55;color:var(--color-base-900);max-height:6rem;overflow-y:auto;scrollbar-width:thin}
+.flow-input::placeholder{color:var(--color-base-500)}
+.flow-actions{display:flex;align-items:center;justify-content:space-between;gap:.625rem;padding-left:.25rem}
+.flow-actions .btn-primary{height:2.375rem;flex-shrink:0}
+.result-body{max-height:60vh;overflow:auto;padding:1.25rem;font-size:.875rem;line-height:1.65;color:var(--color-base-800);scrollbar-width:thin}
+.result-body h1{font-family:var(--font-display);font-size:1.375rem;font-weight:600;letter-spacing:-.01em;color:var(--color-base-900);margin:1.25rem 0 .5rem}
+.result-body h1:first-child{margin-top:0}
+.result-body h2{font-family:var(--font-display);font-size:1.125rem;font-weight:600;color:var(--color-base-900);margin:1.5rem 0 .5rem}
+.result-body h3{font-size:.9375rem;font-weight:600;color:var(--color-base-900);margin:1.25rem 0 .375rem}
+.result-body p{margin:.5rem 0}
+.result-body ul,.result-body ol{margin:.5rem 0;padding-left:1.25rem}
+.result-body li{margin:.25rem 0}
+.result-body hr{border:0;border-top:1px solid var(--color-base-100);margin:1.5rem 0}
+.result-body blockquote{margin:1rem 0;padding:.75rem 1rem;border-left:3px solid var(--color-base-200);background:var(--color-base-50);border-radius:0 .5rem .5rem 0;color:var(--color-base-600);font-size:.875rem;line-height:1.6}
+.result-body blockquote p{margin:0}
+.result-body code{font-family:var(--font-mono);font-size:.8125rem;background:var(--color-base-100);border-radius:.375rem;padding:.125rem .375rem}
+.result-body pre{background:var(--color-base-950);color:var(--color-base-50);border-radius:.75rem;padding:1rem;overflow-x:auto;margin:.75rem 0;max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
+.result-body pre code{background:transparent;color:inherit;padding:0;font-size:.8125rem}
+.result-body table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.8125rem}
+.result-body th,.result-body td{text-align:left;border-bottom:1px solid var(--color-base-100);padding:.4375rem .625rem;vertical-align:top}
+.result-body th{font-weight:600;color:var(--color-base-900);background:var(--color-base-50)}
+.result-body thead th{border-bottom:1px solid var(--color-base-200)}
+.result-body code{font-family:var(--font-mono);font-size:.8125rem;background:var(--color-base-100);border-radius:.375rem;padding:.0625rem .25rem}
+.result-body pre code{background:transparent;padding:0}
+.result-body ul,.result-body ol{padding-left:1.25rem}
+/* ---- flow stages: design language BERBEDA dari composer utama ---- */
+.stage{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.75rem;font-size:.75rem;font-weight:500;letter-spacing:.04em;line-height:1.5;text-transform:uppercase;color:var(--color-base-500)}
+.stage .step{flex-shrink:0;font-family:var(--font-mono);font-size:.625rem;background:var(--color-base-900);color:var(--color-base-50);border-radius:.375rem;padding:.1875rem .375rem;letter-spacing:.04em;margin-top:.0625rem}
+.clarify-card{background:var(--color-white);border-radius:1rem;box-shadow:var(--ring-soft);padding:1.75rem;animation:card-in var(--dur-base) var(--ease-out) both}
+.clarify-card h3{font-family:var(--font-display);font-size:1.25rem;font-weight:600;letter-spacing:-.01em;color:var(--color-base-900);margin:0}
+.clarify-card .sub{font-size:.875rem;color:var(--color-base-600);margin:.5rem 0 1.5rem}
+.clarify-q{padding:1.25rem 0;border-top:1px solid var(--color-base-100)}
+.clarify-q:first-of-type{border-top:0;padding-top:0}
+.clarify-q .q-num{display:inline-flex;font-family:var(--font-mono);font-size:.6875rem;font-weight:500;color:var(--color-base-500);letter-spacing:.04em;background:var(--color-base-50);box-shadow:var(--ring-soft);border-radius:.5rem;padding:.3125rem .5rem;line-height:1}
+.clarify-q label{display:block;cursor:pointer;margin-top:.5rem}
+.clarify-q .q-text{display:block;font-size:1rem;font-weight:500;color:var(--color-base-900);line-height:1.5}
+.clarify-q .q-why{display:block;font-size:.8125rem;color:var(--color-base-500);line-height:1.5;margin-top:.25rem}
+.opt-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin:.875rem 0 0}
+.opt{height:2.375rem;padding:0 .9375rem;border-radius:.625rem;background:var(--color-base-50);color:var(--color-base-700);font-size:.8438rem;font-weight:500;box-shadow:var(--ring-soft);transition:background-color var(--dur-fast),color var(--dur-fast),box-shadow var(--dur-fast);display:inline-flex;align-items:center;gap:.4375rem}
+.opt:hover{background:var(--color-base-100);color:var(--color-base-900)}
+.opt .tick{width:.75rem;height:.75rem;opacity:0;transition:opacity var(--dur-fast)}
+.opt[aria-pressed="true"]{background:var(--color-base-900);color:var(--color-base-50)}
+.opt[aria-pressed="true"] .tick{opacity:1}
+.clarify-q .input{margin-top:.625rem}
+.clarify-actions{display:flex;gap:.625rem;flex-wrap:wrap;align-items:center;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--color-base-100)}
+.btn-ghost{height:2.5rem;padding:0 .875rem;border-radius:.625rem;color:var(--color-base-600);font-size:.8125rem;font-weight:500;transition:color var(--dur-fast),background-color var(--dur-fast);display:inline-flex;align-items:center}
+.btn-ghost:hover{color:var(--color-base-900);background:var(--color-base-50)}
+.btn-primary{white-space:nowrap;height:2.5rem;color:var(--color-white);background:var(--color-base-900);border-radius:.625rem;align-items:center;gap:.375rem;padding:0 1rem;font-size:.8125rem;font-weight:500;display:inline-flex;transition:opacity .15s;cursor:pointer;border:0}
+.btn-primary:hover{opacity:.86}
+.btn-primary:disabled{opacity:.4;cursor:default}
+.result-body .analyzing{color:var(--color-base-600)}
+.cursor-blink{display:inline-block;width:.5rem;height:.9375rem;background:var(--color-base-900);vertical-align:text-bottom;animation:1s steps(2) infinite blink}
+@keyframes blink{50%{opacity:0}}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.75rem;min-height:12rem;color:var(--color-base-500);font-size:.875rem;padding:2rem}
+.empty-state .big{width:2.5rem;height:2.5rem;color:var(--color-base-300)}
+
+/* ================= cara kerja ================= */
+.design-table{width:100%;border-collapse:collapse;margin-top:1.25rem;font-size:.875rem}
+.design-table tr{border-top:1px solid var(--color-base-100)}
+.design-table tr:last-child{border-bottom:1px solid var(--color-base-100)}
+.design-table th{text-align:left;font-weight:500;color:var(--color-base-500);padding:.875rem 1rem .875rem 0;width:10rem;vertical-align:top}
+.design-table td{color:var(--color-base-700);padding:.875rem 0;line-height:1.55;font-weight:450}
+.design-table .row-num{font-family:var(--font-mono);font-size:.75rem;color:var(--color-base-300);width:3rem;vertical-align:top;padding:.875rem 0}
+@media(max-width:640px){.design-table th,.design-table td,.design-table .row-num{display:block;width:auto;padding:.5rem 0}.design-table tr{padding:.75rem 0;display:block}.design-table .row-num{color:var(--color-base-300)}}
+
+/* ================= footer ================= */
+.newsletter{padding:3rem .75rem 1.5rem}
+.newsletter-inner{overflow:hidden;border-radius:2rem;background:var(--color-base-50)}
+.newsletter-box{max-width:64rem;margin-inline:auto;padding-block:3.5rem;padding-inline:1.25rem;text-align:center}
+.newsletter-logo{display:inline-block;width:3.5rem;height:auto}
+.newsletter h2{margin-top:1.25rem}
+.cta-row{display:flex;gap:.625rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem}
+.newsletter h2{font-family:var(--font-display);font-size:1.5rem;font-weight:600;letter-spacing:-.01em;color:var(--color-base-900);margin-top:2rem;text-wrap:balance}
+@media(min-width:768px){.newsletter h2{font-size:1.875rem}}
+.newsletter .note{margin-top:.875rem;font-size:.8125rem;color:var(--color-base-500)}
+.foot{max-width:72rem;margin-inline:auto;padding-inline:1.25rem;padding-bottom:3rem}
+.foot-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;border-top:1px solid var(--color-base-100);padding-top:2rem}
+@media(min-width:768px){.foot-cols{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.foot-col h4{font-size:.8125rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--color-base-500);margin-bottom:.75rem}
+.foot-col a{display:block;font-size:.875rem;color:var(--color-base-700);padding:.25rem 0}
+.foot-col a:hover{color:var(--color-base-900)}
+.foot-bottom{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:1px solid var(--color-base-100);margin-top:2rem;padding-top:1.5rem;font-size:.8125rem;color:var(--color-base-500)}
+.foot-signature{margin-top:3rem;text-align:center;font-family:"Michroma","Inter","Helvetica Neue",Arial,sans-serif;font-size:.875rem;font-weight:400;letter-spacing:.35em;text-transform:uppercase;color:var(--color-base-800)}
+html.dark .foot-signature{color:var(--color-base-600)}
+
+/* ================= toast ================= */
+.toast{position:fixed;z-index:60;bottom:1.5rem;left:50%;translate:-50% 8px;background:var(--color-base-900);color:var(--color-base-50);border-radius:999px;padding:.625rem 1.25rem;font-size:.8125rem;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,translate .2s;max-width:calc(100vw - 2rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast.show{opacity:1;translate:-50% 0}
+
+/* ================= settings modal ================= */
+.modal-backdrop{position:fixed;inset:0;z-index:50;background:#0e0f1159;opacity:0;transition:opacity 260ms ease-out}
+.modal-backdrop.show{opacity:1}
+.modal{position:fixed;z-index:60;top:50%;left:50%;width:calc(100vw - 2rem);width:min(38rem,calc(100vw - 2rem));max-height:calc(100vh - 4rem);max-height:calc(100dvh - 4rem);overflow:auto;overscroll-behavior:contain;background:var(--color-white);border-radius:1.25rem;box-shadow:0 18px 50px -20px #17181a45,var(--ring-soft);padding:1.75rem;opacity:0;pointer-events:none;transform:translate(-50%,calc(-50% + 10px)) scale(.985);transition:opacity 260ms ease-out,transform 320ms cubic-bezier(.16,1,.3,1);will-change:opacity,transform;contain:paint}
+.modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.75rem}
+.modal>*{opacity:1;transform:none}
+@media(max-width:640px){.modal{padding:1.25rem;top:auto;bottom:0;left:0;transform:translateY(100%);width:100vw;border-radius:1.25rem 1.25rem 0 0;max-height:85vh;max-height:85dvh}.modal.show{transform:translateY(0)}}
+
+  /* ================= transisi & reveal profesional ================= */
+  /* Section masuk saat discroll: transform di wrapper, blur-in di anak-anak.
+     Blur memberi rasa "depth" — inilah beda reveal premium vs fade biasa. */
+  .section{opacity:0;transform:translateY(var(--dist-md))}
+  .section.is-in{opacity:1;transform:none;transition:opacity 640ms var(--ease-out),transform 640ms var(--ease-out)}
+
+  /* Child stagger + blur-in: anak-anak masuk berurutan, dari "kabut" jadi tajam */
+  .section>*{opacity:0;transform:translateY(var(--dist-sm))}
+  .section.is-in>*{opacity:1;transform:none;
+    transition:opacity 520ms var(--ease-out),transform 520ms var(--ease-out)}
+  .section.is-in>*:nth-child(1){transition-delay:40ms}
+  .section.is-in>*:nth-child(2){transition-delay:110ms}
+  .section.is-in>*:nth-child(3){transition-delay:180ms}
+  .section.is-in>*:nth-child(4){transition-delay:250ms}
+  .section.is-in>*:nth-child(n+5){transition-delay:320ms}
+  /* Setelah selesai, lepas filter supaya compositor tidak menahan layer percuma */
+  .section.is-in>*:nth-child(n){transition-fill-mode:forwards}
+  .result-card{animation:card-in var(--dur-base) var(--ease-out) both}
+  @keyframes card-in{from{opacity:0;transform:translateY(var(--dist-sm)) scale(.985)}to{opacity:1;transform:none}}
+
+  /* Streaming: SELURUH body di-render ulang tiap chunk → animasi per baris
+     bikin ratusan elemen jalan ulang terus = jank. Cukup animasi kartunya saja. */
+  @keyframes line-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+  /* Chat input & tombol: feedback konsisten pakai token durasi */
+  .btn-primary{transition:opacity var(--dur-fast),transform var(--dur-fast) var(--ease-soft)}
+  .btn-primary:active{transform:scale(.97)}
+  .chip{transition-property:background-color,color,box-shadow,transform;transition-duration:var(--dur-fast);transition-timing-function:var(--ease-soft)}
+
+  /* ---- Hero: di atas fold, reveal orkestrasi sendiri saat load (tanpa nunggu scroll) ---- */
+  .hero-head>*,.design-chat{opacity:0;transform:translateY(var(--dist-sm));
+    animation:hero-in 560ms var(--ease-out) forwards}
+  .hero-pill{animation-delay:40ms}
+  .hero-title{animation-delay:100ms}
+  .hero-sub{animation-delay:170ms}
+  .design-chat{animation-delay:240ms}
+  @keyframes hero-in{to{opacity:1;transform:none}}
+  /* Scroll behavior halus untuk anchor */
+  @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+
+  /* WAJIB: hormati preferensi aksesibilitas user — matikan semua motion */
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+    .section,.hero-head>*,.design-chat{opacity:1;transform:none;filter:none;animation:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="site-nav">
+  <div class="wrap site-nav-inner">
+    <a class="brand" href="/">
+      <img class="brand-logo" src="/logo.png" alt="Luminous">
+      <span class="brand-tag">bring your own key</span>
+    </a>
+    <div class="nav-spacer"></div>
+    <span class="nav-status" id="healthBadge" title="Status backend">
+      <span class="status-dot" id="healthDot"></span>
+      <span id="healthText">memeriksa…</span>
+    </span>
+    <button class="nav-icon" id="settingsBtn" aria-label="Buka pengaturan provider" title="Settings">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" class="icon"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7"/></svg>
+    </button>
+    <button class="nav-icon" id="themeBtn" aria-label="Ganti tema gelap/terang" title="Ganti tema">
+      <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-88a8,8,0,0,1,8-8,48,48,0,0,1,48,48,8,8,0,0,1-16,0,32,32,0,0,0-32-32A8,8,0,0,1,120,128Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <div class="hero-head">
+    <a href="#settings" class="hero-pill" id="heroPill"><span class="hero-pill-dot" aria-hidden="true"></span>Key-mu sendiri, nol penyimpanan</a>
+    <h1 class="hero-title font-display">Apa yang mau kamu bangun?</h1>
+    <p class="hero-sub">Ubah ide jadi <b>rencana proyek</b> (plan.md) yang siap dipakai <b>coding agent</b> — disusun oleh provider AI pilihanmu.</p>
+  </div>
+
+  <div class="design-chat">
+    <form class="chat-form" id="chatForm" role="search" aria-label="Tuliskan ide proyekmu">
+      <label class="sr-only" for="chatInput">Ide proyek</label>
+      <textarea class="chat-input" id="chatInput" rows="1" maxlength="2000" autocomplete="off" autocapitalize="off" spellcheck="false"
+             placeholder="mis. marketplaces buah lokal dengan delivery H+1, multi-seller, dan pembayaran QRIS…"></textarea>
+      <div class="chat-bar">
+        <div class="chat-meta"><span class="chat-count mono" id="chatCount">0 / 2000</span><span class="chat-divider kbd-hint" aria-hidden="true"></span><kbd class="kbd-hint">Enter</kbd><span class="kbd-hint">kirim</span><span class="chat-divider kbd-hint" aria-hidden="true"></span><kbd class="kbd-hint">Shift+Enter</kbd><span class="kbd-hint">baris baru</span></div>
+        <button class="chat-submit" type="submit" id="chatSubmit" aria-label="Susun rencana" title="Susun rencana (Enter)">
+        <span>Susun</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+      </button>
+      </div>
+    </form>
+    <div class="chat-hint">
+      <span>Provider aktif:</span>
+      <kbd class="mono" id="hintProvider">–</kbd>
+      <span>·</span>
+      <span>Model:</span>
+      <kbd class="mono" id="hintModel">–</kbd>
+    </div>
+
+    <div class="chips" id="promptChips" style="margin-top:1.25rem" aria-label="Contoh prompt cepat">
+      <button type="button" class="chip" data-p="Aplikasi kasir (POS) untuk warung kopi, offline-first, laporan harian">Aplikasi kasir</button>
+      <button type="button" class="chip" data-p="Marketplace produk UMKM lokal dengan payment gateway dan kurir instan">Marketplace UMKM</button>
+      <button type="button" class="chip" data-p="Dashboard monitoring IoT dengan grafik realtime dan alert Telegram">Dashboard IoT</button>
+      <button type="button" class="chip" data-p="SaaS manajemen langganan konten dengan billing dan referral">SaaS langganan</button>
+    </div>
+  </div>
+
+  <!-- ============ HASIL ============ -->
+  <section class="wrap section" id="result-section">
+    <form class="flow-form" id="flowForm" role="search" aria-label="Tulis atau edit ide proyekmu">
+      <label class="sr-only" for="flowInput">Ide proyek</label>
+      <textarea class="flow-input" id="flowInput" rows="1" maxlength="2000" autocomplete="off" autocapitalize="off" spellcheck="false"
+             placeholder="Tulis ide lain, atau edit ide ini…"></textarea>
+      <div class="flow-actions">
+        <button class="btn-mini flow-back" id="flowBack" type="button" title="Kembali ke beranda">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M172.69,81.76,89.38,165.06a8,8,0,0,1-11.32-11.32l83.31-83.3a8,8,0,0,1,11.32,11.32Z" transform="translate(256,0) scale(-1,1)"/></svg>
+          Beranda
+        </button>
+        <button class="btn-primary" type="submit" id="flowSubmit" aria-label="Susun ulang rencana" title="Susun ulang (Enter)">
+          <span>Susun ulang</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </button>
+      </div>
+    </form>
+    <div class="section-head">
+      <h2 class="section-title font-display">Rencana</h2>
+      <span class="section-note" id="resultMeta"></span>
+    </div>
+    <div class="canvas" id="resultCanvas">
+      <div class="empty-state" id="emptyState">
+        <svg class="big" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 4C33.6 4 38.4 4 41.9 6.3A8 8 0 0 1 41.9 6.3C44.2 9.6 44 14.4 44 24C44 33.6 44.2 38.4 41.7 41.9A8 8 0 0 1 41.9 41.7C38.4 44 33.6 44 24 44C14.4 44 9.6 44 6.1 41.7A8 8 0 0 1 6.3 41.9C4 38.4 4 33.6 4 24C4 14.4 4 9.6 6.3 6.1C9.6 4 14.4 4 24 4Z" stroke="currentColor" stroke-width="1.5"/><path d="M18 30 30 18M30 18H20M30 18V28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Belum ada rencana. Tulis ide di atas, atau pilih contoh —<br>hasil mengalir langsung (streaming) begitu provider merespons.</span>
+      </div>
+      <div class="result-card" id="resultCard" hidden>
+        <div class="result-head">
+          <span class="chat-dot" id="runDot" hidden></span>
+          <span class="grow mono" id="runTitle">plan.md</span>
+          <div class="result-actions">
+            <button class="icon-btn" id="btnCopy" title="Salin ke clipboard" aria-label="Salin">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M192,72V56a16,16,0,0,0-16-16H40A16,16,0,0,0,24,56V184a16,16,0,0,0,16,16H56v16a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V88A16,16,0,0,0,216,72ZM56,184H40V56H176V72H72A16,16,0,0,0,56,88ZM216,216H72V88H216Z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnDownload" title="Unduh .md" aria-label="Unduh">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M224,152v56a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H208V152a8,8,0,0,1,16,0Zm-69.66,34.34a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48a8,8,0,0,0,11.32,11.32L120,136.69V24a8,8,0,0,1,16,0V136.69Z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="result-body" id="resultBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CARA KERJA ============ -->
+  <section class="wrap section">
+    <div class="section-head">
+      <h2 class="section-title font-display">Cara kerja</h2>
+      <span class="section-note">semua request lewat backend proxy lokal</span>
+    </div>
+    <table class="design-table">
+      <tbody>
+        <tr><td class="row-num">01</td><th>Alur</th><td>Browser → <span class="mono">/api/chat-stream</span> (SSE) → provider-mu → balik token-demi-token</td></tr>
+        <tr><td class="row-num">02</td><th>Penyimpanan</th><td>Nol. Config ada di localStorage, key hanya di memori backend.</td></tr>
+        <tr><td class="row-num">03</td><th>Retry</th><td>Otomatis 2× untuk 429/5xx/network, backoff eksponensial.</td></tr>
+        <tr><td class="row-num">04</td><th>Error gateway</th><td>Halaman HTML dari tunnel/gateway dideteksi &amp; dirapikan jadi pesan yang bisa dibaca.</td></tr>
+        <tr><td class="row-num">05</td><th>Model list</th><td><span class="mono">/api/models</span> mendukung OpenAI-compatible, Anthropic, dan Gemini.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ CTA / FOOTER CARD ============ -->
+  <section class="newsletter">
+    <div class="newsletter-inner">
+      <div class="newsletter-box">
+        <img class="newsletter-logo" src="/logo.png" alt="Logo Luminous">
+        <h2 class="font-display">Satu rencana, langsung dikerjakan coding agent</h2>
+        <p class="note">Salin atau unduh plan.md, tempel ke agent-mu — tanpa akun, tanpa server pihak ketiga.</p>
+        <div class="cta-row">
+          <button type="button" class="btn-primary" id="ctaStart">
+            Mulai susun rencana
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+          </button>
+          <button type="button" class="btn-ghost" id="ctaPlan">Lihat rencanaku</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <div class="foot-cols">
+    <div class="foot-col">
+      <h4>Produk</h4>
+      <a href="#settings" data-open-settings>Konfigurasi provider</a>
+      <a href="#result-section">Rencana</a>
+    </div>
+    <div class="foot-col">
+      <h4>Alur</h4>
+      <a href="#settings" data-open-settings>Bring your own key</a>
+      <a href="#result-section">Streaming SSE</a>
+    </div>
+    <div class="foot-col">
+      <h4>Privasi</h4>
+      <a href="#settings" data-open-settings>Key di localStorage</a>
+      <a href="#result-section">Nol log di disk</a>
+    </div>
+    <div class="foot-col">
+      <h4>Backend</h4>
+      <a href="/" title="Status backend"><span class="mono" id="footHealth">node server.js</span></a>
+    </div>
+  </div>
+  <div class="foot-signature">REJANOMALOUS</div>
+  <div class="foot-bottom">
+    <span>&copy; 2026 Luminous</span>
+  </div>
+</footer>
+
+<!-- ============ SETTINGS MODAL ============ -->
+<div class="modal-backdrop" id="settingsBackdrop" hidden></div>
+<div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+  <div class="modal-head">
+    <h2 class="section-title font-display" id="settingsTitle">Konfigurasi provider</h2>
+    <button class="icon-btn" id="settingsClose" aria-label="Tutup settings" title="Tutup">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+    </button>
+  </div>
+  <p class="section-note" style="margin-bottom:1.25rem">Disimpan lokal di browser (localStorage) — tidak dikirim ke mana pun selain provider-mu.</p>
+  <div class="panel" style="margin-top:0">
+    <div class="panel-status">
+      <span class="chat-dot" id="cfgDot"></span>
+      <span class="grow" id="cfgStatus">Belum dites — isi config lalu tekan ikon kaca pembesar.</span>
+      <div class="result-actions">
+        <button class="icon-btn" id="cfgTest" title="Test koneksi" aria-label="Test koneksi">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M229.66,218.34l-50.07-50.06a96.14,96.14,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="chips" style="justify-content:flex-start;margin:0 0 1.25rem" id="providerChips">
+      <button type="button" class="chip" data-v="openai" aria-pressed="true">OpenAI</button>
+      <button type="button" class="chip" data-v="anthropic" aria-pressed="false">Anthropic</button>
+      <button type="button" class="chip" data-v="gemini" aria-pressed="false">Gemini</button>
+      <button type="button" class="chip" data-v="custom" aria-pressed="false">Custom / OpenAI-compat</button>
+    </div>
+
+    <div class="config-grid">
+      <div class="field" style="grid-column:1/-1">
+        <label class="field-label" for="fModel">Model</label>
+        <div class="model-row">
+          <select class="select mono" id="fModel">
+            <option value="">— pilih / ketik model —</option>
+          </select>
+          <button class="btn-mini" id="btnModels" title="Muat daftar model dari provider">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M200,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm-8,72H64V64H192Z"/></svg>
+            Models
+          </button>
+        </div>
+        <input class="input mono" id="fModelCustom" type="text" spellcheck="false"
+               placeholder="atau ketik manual, mis. gpt-4o-mini">
+      </div>
+    </div>
+
+    <button type="button" class="cred-toggle" id="credToggle" aria-expanded="false" aria-controls="credPanel">
+      <svg class="icon caret" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M181.66,133.66l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,124.69l42.34-42.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      <span>Kredensial &amp; koneksi</span>
+      <span class="cred-status" id="credStatus" hidden>
+        <span class="dot" id="credDot"></span>
+        <span id="credStatusText">Base URL &amp; key terisi</span>
+      </span>
+    </button>
+
+    <div class="cred-panel" id="credPanel">
+      <div>
+        <div class="config-grid" style="padding-top:1.25rem">
+          <div class="field">
+            <label class="field-label" for="fBaseUrl">Base URL <span class="mono" id="baseHint">/v1</span></label>
+            <input class="input mono" id="fBaseUrl" type="text" spellcheck="false" placeholder="https://api.openai.com/v1">
+            <p class="field-hint" id="baseHelp">Kosongkan untuk pakai default resmi. Untuk tunnel/custom, isi ujungnya <code>/v1</code>.</p>
+          </div>
+          <div class="field">
+            <label class="field-label" for="fKey">API Key</label>
+            <input class="input mono" id="fKey" type="password" spellcheck="false" placeholder="sk-…">
+            <p class="field-hint">Key hanya melewati backend proxy ini, tidak ditulis ke disk.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* ============================================================
+   Luminous frontend
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const LS_KEY = 'luminous.cfg.v2';
+
+const state = {
+  provider: 'openai',
+  baseUrl: '',
+  key: '',
+  model: '',
+  running: false,
+  raw: '',
+  clarify: null,   /* { idea, questions:[{q,why,options}] } saat mode discovery */
+  flowIdea: null   /* idea yang sedang jalan di subpage #/generate */
+};
+
+const DEFAULT_BASE = {
+  openai:    'https://api.openai.com/v1',
+  anthropic: 'https://api.anthropic.com',
+  gemini:    'https://generativelanguage.googleapis.com',
+  custom:    ''
+};
+
+/* ---------- helpers ---------- */
+let toastTimer;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function getCfg(){
+  const model = $('fModelCustom').value.trim() || $('fModel').value.trim();
+  return {
+    provider: state.provider,
+    baseUrl: $('fBaseUrl').value.trim(),
+    key: $('fKey').value.trim(),
+    model,
+  };
+}
+function syncCfgFromInputs(){
+  state.baseUrl = $('fBaseUrl').value.trim();
+  state.key = $('fKey').value.trim();
+  state.model = $('fModelCustom').value.trim() || $('fModel').value.trim();
+  save();
+  updateHints();
+  updateCredStatus();
+}
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify({
+  provider: state.provider, baseUrl: state.baseUrl, key: state.key,
+  model: state.model
+})); }catch(_){} }
+function load(){
+  try{
+    const c = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    Object.assign(state, c);
+  }catch(_){}
+}
+function updateHints(){
+  $('hintProvider').textContent = state.provider;
+  $('hintModel').textContent = state.model || 'belum dipilih';
+}
+
+/* ---------- reveal section saat scroll (skip kalau user mau minim motion) ---------- */
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const io = new IntersectionObserver((es) => {
+    for (const e of es) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+  }, { threshold: 0.05, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.section').forEach(el => io.observe(el));
+}
+else document.querySelectorAll('.section').forEach(el => el.classList.add('is-in'));
+/* ---------- theme ---------- */
+function applyTheme(dark){
+  const set = () => {
+    document.documentElement.classList.toggle('dark', dark);
+    localStorage.setItem('luminous.theme', dark ? 'dark' : 'light');
+  };
+  // View Transitions API: cross-fade halus; browser lama fallback langsung
+  if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+    document.startViewTransition(set);
+  else set();
+}
+$('themeBtn').addEventListener('click', () => {
+  applyTheme(!document.documentElement.classList.contains('dark'));
+});
+applyTheme(localStorage.getItem('luminous.theme') === 'dark'
+  || (localStorage.getItem('luminous.theme') === null && matchMedia('(prefers-color-scheme: dark)').matches));
+route();
+
+/* ---------- health ---------- */
+async function checkHealth(){
+  const dot = $('healthDot'), txt = $('healthText');
+  try{
+    const r = await fetch('/api/health', { cache:'no-store' });
+    const j = await r.json();
+    if (j.ok){ dot.className = 'status-dot ok'; txt.textContent = 'backend siap'; }
+    else throw new Error('not ok');
+  }catch(_){
+    dot.className = 'status-dot err';
+    txt.textContent = 'backend mati — jalankan node server.js';
+  }
+}
+checkHealth();
+setInterval(checkHealth, 30000);
+
+/* ---------- provider chips ---------- */
+const BASE_HINTS = { openai:'/v1', anthropic:'(root, tanpa /v1)', gemini:'(root)', custom:'/v1 (wajib)' };
+function setProvider(p){
+  state.provider = p;
+  document.querySelectorAll('#providerChips .chip').forEach(c =>
+    c.setAttribute('aria-pressed', String(c.dataset.v === p)));
+  $('baseHint').textContent = BASE_HINTS[p] || '/v1';
+  if (!$('fBaseUrl').value.trim()) $('fBaseUrl').placeholder = DEFAULT_BASE[p] || 'https://host/v1';
+  save(); updateHints();
+}
+document.querySelectorAll('#providerChips .chip').forEach(c =>
+  c.addEventListener('click', () => setProvider(c.dataset.v)));
+
+/* ---------- models ---------- */
+async function loadModels(){
+  const btn = $('btnModels');
+  const cfg = getCfg();
+  if (!cfg.provider){ toast('Pilih provider dulu'); return; }
+  btn.disabled = true;
+  $('cfgStatus').textContent = 'Memuat daftar model…';
+  try{
+    const r = await fetch('/api/models', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ config: cfg })
+    });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Gagal memuat model');
+    const sel = $('fModel');
+    const prev = sel.value;
+    sel.innerHTML = '';
+    const models = j.models || [];
+    if (!models.length){
+      sel.innerHTML = '<option value="">(tidak ada model — ketik manual di bawah)</option>';
+    } else {
+      for (const m of models){
+        const o = document.createElement('option');
+        o.value = m.id || m.name || m;
+        o.textContent = o.value;
+        sel.appendChild(o);
+      }
+    }
+    if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+    else if (state.model && [...sel.options].some(o => o.value === state.model)) sel.value = state.model;
+    else if (models.length) sel.selectedIndex = 0;
+    $('cfgDot').style.background = 'var(--color-ok)';
+    $('cfgStatus').textContent = `Model dimuat: ${models.length || 0} pilihan.`;
+    toast(`${models.length} model dimuat`);
+  }catch(e){
+    $('cfgDot').style.background = 'var(--color-err)';
+    $('cfgStatus').textContent = 'Gagal: ' + e.message;
+    toast(e.message);
+  }finally{
+    btn.disabled = false;
+    save(); updateHints();
+  }
+}
+$('btnModels').addEventListener('click', loadModels);
+
+async function testConfig(){
+  const cfg = getCfg();
+  if (!cfg.model){ toast('Pilih/ketik model dulu'); return; }
+  $('cfgDot').style.background = '';
+  $('cfgStatus').textContent = 'Mengetes koneksi…';
+  try{
+    const r = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ config: cfg, prompt: 'Balas persis: OK', maxTokens: 16 })
+    });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Gagal');
+    $('cfgDot').style.background = 'var(--color-ok)';
+    $('cfgStatus').textContent = `Koneksi OK — balasan: ${(j.text||'').trim().slice(0,40)}`;
+    toast('Provider siap dipakai');
+  }catch(e){
+    $('cfgDot').style.background = 'var(--color-err)';
+    $('cfgStatus').textContent = 'Gagal: ' + e.message;
+    toast(e.message.slice(0,120));
+  }
+  save(); updateHints();
+}
+$('cfgTest').addEventListener('click', testConfig);
+
+/* ---------- markdown mini renderer ---------- */
+function esc(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function mdRender(src){
+  const lines = esc(stripEmoji(unwrapOuterFence(src))).split('\n');
+  let out = '', inUl = false, inOl = false, inPre = false, inTable = false, para = [];
+  let tableHeads = [], preFence = '', skipNestedFence = 0, inQuote = false;
+  const flush = () => { if (para.length){ out += '<p>' + para.join('<br>') + '</p>'; para = []; } };
+  const closeLists = () => {
+    if (inUl){ out += '</ul>'; inUl = false; }
+    if (inOl){ out += '</ol>'; inOl = false; }
+  };
+  const closeTable = () => {
+    if (inTable){ out += '</tbody></table>'; inTable = false; }
+  };
+  const inline = s => s
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  const isRow = l => /^\s*\|.*\|\s*$/.test(l);
+  const treeRe = /[\u2502\u251C\u2514\u252C\u253C]/;
+  const nextPureFence = (from, len, ch) => {
+    for (let k = from + 1; k < lines.length; k++){
+      if (/^#{1,2}\s+/.test(lines[k])) return -1;
+      const m = lines[k].match(/^\s*(`{3,}|~{3,})\s*$/);
+      if (m && m[1][0] === ch && m[1].length >= len) return k;
+    }
+    return -1;
+  };
+  const hasNestedTreeFence = (from, len, ch) => {
+    const j = nextPureFence(from, len, ch);
+    if (j === -1) return false;
+    let n = 0;
+    for (let k = from + 1; k < j; k++) if (treeRe.test(lines[k])) n++;
+    return n >= 2;
+  };
+  for (let li = 0; li < lines.length; li++){
+    const line = lines[li];
+    const fence = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
+    if (fence){
+      const marker = fence[1], info = fence[2].trim();
+      const pure = info === '';
+      const closes = pure && marker[0] === preFence[0] && marker.length >= preFence.length;
+      if (!inPre){
+        flush(); closeLists(); closeTable();
+        out += '<pre><code>'; inPre = true;
+        preFence = marker; skipNestedFence = 0;
+        continue;
+      }
+      if (skipNestedFence > 0){
+        if (closes){ skipNestedFence--; continue; }
+        out += line + '\n'; continue;
+      }
+      if (closes){
+        if (hasNestedTreeFence(li, marker.length, marker[0])){ skipNestedFence = 1; continue; }
+        out += '</code></pre>'; inPre = false; preFence = '';
+        continue;
+      }
+      out += line + '\n'; continue;
+    }
+    if (inPre){ out += line + '\n'; continue; }
+    const quote = line.match(/^&gt;\s?(.*)/);
+    if (quote){
+      flush(); closeLists(); closeTable();
+      if (!inQuote){ out += '<blockquote>'; inQuote = true; }
+      out += `<p>${inline(quote[1])}</p>`;
+      continue;
+    }
+    if (inQuote){ out += '</blockquote>'; inQuote = false; }
+    const h = line.match(/^(#{1,3})\s+(.*)/);
+    if (h){ flush(); closeLists(); closeTable(); out += `<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`; continue; }
+    const ul = line.match(/^\s*[-*]\s+(.*)/);
+    if (ul){ flush(); closeTable(); if (inOl){ out += '</ol>'; inOl = false; } if (!inUl){ out += '<ul>'; inUl = true; } out += `<li>${inline(ul[1])}</li>`; continue; }
+    const ol = line.match(/^\s*\d+[.)]\s+(.*)/);
+    if (ol){ flush(); closeTable(); if (inUl){ out += '</ul>'; inUl = false; } if (!inOl){ out += '<ol>'; inOl = true; } out += `<li>${inline(ol[1])}</li>`; continue; }
+    /* tabel markdown: header | --- | --- | baris */
+    if (isRow(line)){
+      flush(); closeLists();
+      const cells = line.trim().replace(/^\||\|$/g, '').split('|').map(c => inline(c.trim()));
+      const next = lines[li + 1] || '';
+      const isSep = /^\s*\|?[\s:|-]+\|?\s*$/.test(next) && next.includes('-');
+      if (!inTable){
+        if (isSep){ li++; }
+        tableHeads = cells.map(c => c.replace(/<[^>]*>/g, ''));
+        out += '<table><thead><tr>' + cells.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+        inTable = true;
+      } else {
+        out += '<tr>' + cells.map((c, ci) => {
+          const rawLabel = tableHeads[ci] || '';
+          const label = (rawLabel === '#' ? 'No' : rawLabel).replace(/"/g, '&quot;');
+          return `<td data-label="${label}">${c}</td>`;
+        }).join('') + '</tr>';
+      }
+      continue;
+    }
+    if (inTable && /^\s*\|?[\s:|-]+\|?\s*$/.test(line)) continue; /* baris pemisah, skip */
+    closeTable();
+    if (/^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/.test(line)){ flush(); closeLists(); out += '<hr>'; continue; }
+    if (!line.trim()){ flush(); closeLists(); continue; }
+    para.push(inline(line));
+  }
+  flush(); closeLists(); closeTable();
+  if (inQuote) out += '</blockquote>';
+  if (inPre) out += '</code></pre>';
+  return out;
+}
+
+/* ---------- generate (SSE streaming) ---------- */
+const SYSTEM_PROMPT = `Kamu adalah arsitek produk senior. Ubah ide pengguna menjadi dokumen PRD (plan.md) yang lengkap dan siap dipakai coding agent. Gunakan bahasa pengguna. Struktur wajib:
+# <Nama Proyek>
+## Ringkasan (masalah, solusi, target pengguna)
+## Tujuan & Metrik Sukses
+## Fitur (MVP) — tabel: Fitur | Prioritas | Deskripsi | Kriteria selesai
+## Di luar MVP
+## User flow utama (alur pengguna kunci, langkah demi langkah)
+## Tech stack + alasan singkat
+## Model data utama — tabel: Entitas | Field penting | Relasi
+## Milestone (M1..Mn) — tabel: Milestone | Deliverable | Estimasi relatif
+## Risiko & mitigasi
+## Prompt awal untuk coding agent
+Jawab langsung dalam markdown, tanpa pembuka basa-basi. Gunakan tabel markdown bila instruksinya menyebut tabel.
+Jangan meminta klarifikasi atau membalas dengan pertanyaan. Jika ada informasi yang kurang, buat asumsi wajar dan tetap susun PRD lengkap; tulis asumsi penting di Ringkasan.
+Jangan membungkus seluruh dokumen dalam blok kode; gunakan blok kode hanya untuk potongan teknis singkat.`;
+
+const CLARIFY_SYSTEM_PROMPT = `Kamu adalah arsitek produk senior yang sedang discovery kebutuhan pengguna sebelum menyusun PRD.
+Tugas: ajukan 1-4 pertanyaan penajaman yang paling berpengaruh terhadap arsitektur & scope produk.
+Aturan:
+- WAJIB ajukan 1-4 pertanyaan. Questions boleh kosong HANYA jika ide sudah sangat spesifik (target user, platform, fitur inti, integrasi, dan skala semuanya sudah jelas).
+- Bahasa Indonesia santai, singkat, mudah dijawab orang awam.
+- Untuk setiap pertanyaan sediakan 2-4 opsi jawaban cepat.
+- Setiap opsi WAJIB jadi elemen array terpisah (string pendek). JANGAN gabungkan beberapa opsi dalam satu string/koma.
+- Jawab HANYA json valid (tanpa markdown fence): {"questions":[{"q":"pertanyaan","why":"kenapa penting (satu kalimat)","options":["opsi1","opsi2","opsi3"]}]}
+- questions boleh array kosong jika ide sudah lengkap.`;
+
+const PM_SYSTEM_PROMPT = `Kamu adalah asisten PM berbahasa Indonesia yang santai tapi teliti.
+Sebelum menyusun PRD, kamu wajib melakukan mini-discovery: ajukan 1-4 pertanyaan penajaman (maksimal 4) tentang hal yang paling memengaruhi scope & arsitektur, misal target pengguna, platform, skala, integrasi wajib, atau batasan budget/waktu.
+Format jawaban HANYA JSON valid tanpa markdown fence:
+{"questions":[{"q":"pertanyaan","why":"alasan singkat","options":["opsi A","opsi B","opsi C"]}]}
+WAJIB ajukan 1-4 pertanyaan. Questions boleh kosong (array []) HANYA jika ide sudah sangat spesifik: target user, platform, fitur inti, integrasi, dan skala semuanya sudah jelas.
+Setiap opsi WAJIB jadi elemen array terpisah (string pendek); jangan gabungkan beberapa opsi dalam satu string/koma.`;
+
+const FALLBACK_QUESTIONS = [
+  { q:'Siapa target pengguna utama aplikasi ini?', why:'Memengaruhi UX, fitur, dan model bisnis.', options:['Konsumen umum (B2C)','Bisnis/perusahaan (B2B)','Internal tim/operasional','Komunitas niche'] },
+  { q:'Platform apa yang jadi prioritas saat peluncuran?', why:'Menentukan tech stack, biaya, dan timeline.', options:['Web app','Mobile (iOS & Android)','Multi-platform','Desktop'] },
+  { q:'Fitur inti apa yang wajib ada di MVP?', why:'Menjaga scope versi pertama tetap fokus.', options:['Autentikasi & profil','Transaksi/pembayaran','Konten/komunitas','Dashboard & laporan'] },
+  { q:'Integrasi pihak ketiga apa yang wajib?', why:'Memengaruhi arsitektur backend dan effort.', options:['Payment gateway','Login sosial (Google/Apple)','Peta/lokasi & notifikasi','Belum ada / tidak perlu'] }
+];
+function isVagueIdea(idea){
+  const t = String(idea).trim();
+  const words = t.split(/\s+/).filter(Boolean).length;
+  return t.length < 45 || words < 6;
+}
+
+function setRunning(on){
+  state.running = on;
+  $('chatSubmit').disabled = on;
+  if (!on){
+    chatInput.value = '';
+    chatUpdate();
+  }
+  $('runDot').hidden = !on;
+  $('runDot').classList.toggle('run', on);
+}
+
+function runStream({ system, prompt, onDelta, onDone }){
+  return new Promise(async (resolve, reject) => {
+    let raw = '';
+    try{
+      const r = await fetch('/api/chat-stream', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ config: getCfg(), system, prompt, stream: true })
+      });
+      if (!r.ok){
+        const j = await r.json().catch(() => null);
+        throw new Error((j && j.error) || `HTTP ${r.status}`);
+      }
+      const reader = r.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      for (;;){
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream:true });
+        let idx;
+        while ((idx = buf.indexOf('\n')) >= 0){
+          const line = buf.slice(0, idx).trim();
+          buf = buf.slice(idx + 1);
+          if (!line.startsWith('data:')) continue;
+          let ev;
+          try { ev = JSON.parse(line.slice(5)); } catch(_){ continue; }
+          if (ev.type === 'delta' && ev.t){
+            raw += ev.t;
+            if (onDelta) onDelta(raw);
+          } else if (ev.type === 'done'){
+            raw = ev.text || raw;
+            if (onDone) onDone(raw);
+            resolve(raw);
+            return;
+          } else if (ev.type === 'error'){
+            throw new Error(ev.error || 'Upstream error');
+          }
+        }
+      }
+      if (!raw.trim()) throw new Error('Stream selesai tapi kosong');
+      resolve(raw);
+    }catch(e){ reject(e); }
+  });
+}
+
+/* ---------- tahap 1: clarify → tahap 2: PRD ---------- */
+function renderClarify(){
+  const c = state.clarify;
+  const qs = c.questions.map((q, i) => `
+    <div class="clarify-q" data-idx="${i}">
+      <span class="q-num">${i + 1}/${c.questions.length}</span>
+      <label><span class="q-text">${esc(q.q)}</span>${q.why ? `<span class="q-why">${esc(q.why)}</span>` : ''}</label>
+      ${(q.options || []).length ? `<div class="opt-grid">${q.options.map(o =>
+        `<button type="button" class="opt" data-o="${esc(o).replace(/"/g, '&quot;')}" aria-pressed="false"><svg class="tick" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224.49,79.51l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,0,1,17-17l47.51,47.5,119.5-119.5a12,12,0,0,1,17,17Z"/></svg>${esc(o)}</button>`).join('')}</div>` : ''}
+      <input class="input" type="text" maxlength="300" placeholder="atau tulis jawabanmu sendiri…">
+    </div>`).join('');
+  return `
+    <div class="stage"><span class="step">01</span> Discovery · ${c.questions.length} pertanyaan penajaman</div>
+    <div class="clarify-card">
+      <h3>Biar PRD-nya pas, jawab dulu</h3>
+      <p class="sub">Klik opsi yang cocok atau tulis sendiri — jawabanmu dipakai AI menyusun PRD final.</p>
+      ${qs}
+      <div class="clarify-actions">
+        <button type="button" class="btn-primary" id="btnClarifySubmit">Susun PRD
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" class="icon"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </button>
+        <button type="button" class="btn-ghost" id="btnClarifySkip">Lewati, langsung PRD</button>
+      </div>
+    </div>`;
+}
+
+function bindClarify(){
+  const card = $('resultBody');
+  card.querySelectorAll('.clarify-q').forEach(w => {
+    const input = w.querySelector('input');
+    w.querySelectorAll('.opt').forEach(opt =>
+      opt.addEventListener('click', () => {
+        const on = opt.getAttribute('aria-pressed') === 'true';
+        w.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed','false'));
+        opt.setAttribute('aria-pressed', String(!on));
+        input.value = '';
+      }));
+    input.addEventListener('input', () =>
+      w.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed','false')));
+  });
+  $('btnClarifySkip').addEventListener('click', () => buildPRD(state.clarify.idea, []));
+  $('btnClarifySubmit').addEventListener('click', () => {
+    const answers = [...card.querySelectorAll('.clarify-q')].map(w => {
+      const q = state.clarify.questions[+w.dataset.idx];
+      const sel = w.querySelector('.opt[aria-pressed="true"]');
+      return { q: q.q, a: sel ? sel.dataset.o : w.querySelector('input').value.trim() };
+    }).filter(x => x.a);
+    buildPRD(state.clarify.idea, answers);
+  });
+}
+
+function stripEmoji(s){
+  return String(s)
+    .replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '')
+    .replace(/[\u2E80-\u2FFF\u3000-\u303F\u3040-\u30FF\u31F0-\u31FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uAC00-\uD7AF\uFF00-\uFFEF\u{20000}-\u{2FA1F}]/gu, '');
+}
+function unwrapOuterFence(src, final){
+  const s0 = String(src);
+  const open = s0.match(/^\s*(`{3,}|~{3,})([^\n]*)\n/);
+  if (!open) return s0;
+  const marker = open[1];
+  const rest = s0.slice(open[0].length);
+  if (final){
+    const lines = rest.replace(/\s+$/, '').split('\n');
+    const last = (lines[lines.length - 1] || '').trim();
+    const lm = last.match(/^(`{3,}|~{3,})$/);
+    if (!lm || lm[1][0] !== marker[0] || lm[1].length < marker.length) return s0;
+    const inner = lines.slice(0, -1).join('\n');
+    const h2 = (inner.match(/^##\s+\S/gm) || []).length;
+    if (!/^#\s+\S/m.test(inner) || h2 < 2) return s0;
+    return inner;
+  }
+  const nonEmpty = rest.split('\n').filter(l => l.trim());
+  if (nonEmpty.length < 2 || !/^#\s+\S/.test(nonEmpty[0]) || !/^##\s+\S/.test(nonEmpty[1])) return s0;
+  const lines = rest.replace(/\s+$/, '').split('\n');
+  const last = (lines[lines.length - 1] || '').trim();
+  const lm = last.match(/^(`{3,}|~{3,})$/);
+  if (lm && lm[1][0] === marker[0] && lm[1].length >= marker.length) lines.pop();
+  return lines.join('\n');
+}
+function cleanText(s){
+  return stripEmoji(s).replace(/\s{2,}/g, ' ').trim();
+}
+function normalizeQuestions(qs){
+  return qs.map(q => {
+    let opts = Array.isArray(q.options) ? q.options.map(o => cleanText(o)).filter(Boolean) : [];
+    if (opts.length === 1){
+      const parts = opts[0].split(',').map(x => x.trim()).filter(Boolean);
+      if (parts.length >= 3) opts = parts;
+    }
+    return { q: cleanText(q.q || ''), why: q.why ? cleanText(q.why) : '', options: opts };
+  }).filter(q => q.q);
+}
+
+function showClarifyQuestions(questions, idea){
+  state.clarify = { idea, questions: normalizeQuestions(questions) };
+  $('runTitle').textContent = 'discovery…';
+  $('resultMeta').textContent = 'menunggu jawabanmu';
+  $('resultBody').removeAttribute('aria-busy');
+  document.body.classList.add('mode-clarify');
+  $('resultBody').classList.add('is-clarify');
+  $('resultCard').classList.add('is-clarify');
+  $('resultBody').innerHTML = renderClarify();
+  bindClarify();
+}
+
+async function startGeneration(idea){
+  const cfg = getCfg();
+  if (!cfg.model){ toast('Pilih/ketik model dulu di Settings'); return; }
+  if (!idea.trim()){ toast('Tulis idemu dulu'); return; }
+  if (state.running) return;
+
+  setRunning(true);
+  syncCfgFromInputs();
+  state.raw = '';
+  state.clarify = null;
+  $('emptyState').hidden = true;
+  $('resultCard').hidden = false;
+  $('runTitle').textContent = 'menganalisis ide…';
+  $('resultMeta').textContent = `${cfg.provider} · ${cfg.model}`;
+  document.body.classList.remove('mode-clarify');
+  $('resultBody').classList.remove('is-clarify');
+  $('resultCard').classList.remove('is-clarify');
+  $('resultBody').innerHTML = '<span class="cursor-blink"></span><span class="analyzing"> Menganalisis ide & menyusun pertanyaan penajaman…</span>';
+  $('resultBody').setAttribute('aria-busy','true');
+
+  try{
+    const txt = await runStream({
+      system: PM_SYSTEM_PROMPT,
+      prompt: `Ide proyekku:\n\n${idea.trim()}\n\nTentukan apakah perlu pertanyaan penajaman. Balas hanya JSON.`,
+      onDelta(){ /* diam: user tidak perlu lihat json mentah */ }
+    });
+    let parsed = null, parseOk = false;
+    try {
+      let t = txt.trim().replace(/^```[a-zA-Z]*\s*/, '').replace(/\s*```$/, '').trim();
+      const a = t.indexOf('{'), b = t.lastIndexOf('}');
+      if (a >= 0 && b > a) t = t.slice(a, b + 1);
+      parsed = JSON.parse(t);
+      parseOk = true;
+    } catch(e){ console.warn('clarify JSON parse gagal:', e.message, txt.slice(0, 160)); }
+    let qs = (parseOk && parsed && Array.isArray(parsed.questions)) ? parsed.questions.slice(0, 4) : [];
+    let normalized = normalizeQuestions(qs);
+    if (!normalized.length && (!parseOk || isVagueIdea(idea))){
+      normalized = normalizeQuestions(FALLBACK_QUESTIONS);
+    }
+    if (normalized.length){
+      showClarifyQuestions(normalized, idea);
+    } else {
+      await buildPRD(idea, []);
+    }
+  }catch(e){
+    console.warn('clarify request gagal, pakai pertanyaan fallback:', e.message);
+    showClarifyQuestions(FALLBACK_QUESTIONS, idea);
+  }finally{
+    setRunning(false);
+  }
+}
+
+async function buildPRD(idea, answers){
+  const cfg = getCfg();
+  setRunning(true);
+  state.raw = '';
+  $('resultCard').hidden = false;
+  document.body.classList.remove('mode-clarify');
+  $('resultBody').classList.remove('is-clarify');
+  $('resultCard').classList.remove('is-clarify');
+  $('runTitle').textContent = 'menyusun PRD…';
+  $('resultMeta').textContent = `${cfg.provider} · ${cfg.model}`;
+  $('resultBody').innerHTML = '<span class="cursor-blink"></span>';
+  $('resultBody').setAttribute('aria-busy','true');
+  $('resultCanvas').scrollIntoView({ behavior:'smooth', block:'start' });
+  const ctx = answers.length
+    ? `\n\nKonteks dari user (jawaban atas pertanyaan penajaman):\n${answers.map((a, i) => `${i + 1}. ${a.q}\n   → ${a.a}`).join('\n')}`
+    : '';
+  try{
+    await runStream({
+      system: SYSTEM_PROMPT,
+      prompt: `Ide proyekku:\n\n${idea.trim()}${ctx}\n\nSusun PRD lengkapnya sekarang. Jangan bertanya balik; gunakan asumsi wajar bila ada yang kurang.`,
+      onDelta(t){
+        state.raw = t;
+        const body = $('resultBody');
+        const atBottom = body.scrollHeight - body.scrollTop - body.clientHeight < 80;
+        body.innerHTML = mdRender(t) + '<span class="cursor-blink"></span>';
+        if (atBottom) body.scrollTop = body.scrollHeight;
+        const len = t.length;
+        $('runTitle').textContent =
+          len < 400 ? 'menyusun PRD…' :
+          len < 1600 ? 'menulis…' : 'merapikan…';
+      },
+      onDone(t){
+        state.raw = unwrapOuterFence(stripEmoji(t), true);
+        $('resultBody').innerHTML = mdRender(state.raw);
+        $('resultBody').removeAttribute('aria-busy');
+        const words = state.raw.trim().split(/\s+/).length;
+        $('runTitle').textContent = 'plan.md';
+        $('resultMeta').textContent = `${cfg.provider} · ${cfg.model} · ~${words} kata`;
+      }
+    });
+    if (!state.raw.trim()) throw new Error('Stream selesai tapi kosong');
+  }catch(e){
+    $('resultBody').removeAttribute('aria-busy');
+    $('resultBody').innerHTML =
+      `<div class="btn-err"><p><strong>Gagal:</strong> ${esc(e.message)}</p>` +
+      `<p>Cek Base URL / API key / model, lalu tekan ikon kaca pembesar di panel konfigurasi untuk test koneksi.</p></div>`;
+    $('runTitle').textContent = 'error';
+    toast(e.message.slice(0,140));
+  }finally{
+    setRunning(false);
+  }
+}
+
+/* ---------- composer: auto-grow, counter, keyboard ---------- */
+const chatInput = $('chatInput'), chatForm = $('chatForm'), chatCount = $('chatCount');
+function chatUpdate(){
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 208) + 'px';
+  const n = chatInput.value.length, max = 2000;
+  chatCount.textContent = n + ' / ' + max;
+  chatCount.classList.toggle('warn', n >= max - 200);
+}
+chatInput.addEventListener('input', chatUpdate);
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing){
+    e.preventDefault();
+    chatForm.requestSubmit();
+  }
+});
+/* ---------- subpage routing: clarify + PRD jalan di #/generate ---------- */
+function goGenerate(idea){
+  if (!idea.trim()){ toast('Tulis idemu dulu'); return; }
+  if (!getCfg().model){ toast('Pilih/dulu model di Settings'); openSettings(); return; }
+  if (location.hash.startsWith('#/generate')){ startGeneration(idea); }
+  else location.hash = '#/generate?idea=' + encodeURIComponent(idea);
+}
+function route(){
+  const h = location.hash;
+  if (h.startsWith('#/generate')){
+    document.body.dataset.view = 'flow';
+    const idea = new URLSearchParams((h.split('?')[1]||'')).get('idea') || '';
+    if (idea) $('flowInput').value = idea;
+    if (idea && state.flowIdea !== idea){ state.flowIdea = idea; startGeneration(idea); }
+  }else{
+    document.body.dataset.view = 'home';
+    state.flowIdea = null;
+  }
+}
+window.addEventListener('hashchange', route);
+$('ctaStart').addEventListener('click', () => {
+  location.hash = '';
+  requestAnimationFrame(() => { $('chatInput').focus(); });
+});
+$('ctaPlan').addEventListener('click', () => {
+  if (state.flowIdea){ location.hash = '#/generate'; }
+  else { location.hash = '#/generate'; }
+});
+$('flowBack').addEventListener('click', () => { location.hash = ''; });
+$('flowForm').addEventListener('submit', e => {
+  e.preventDefault();
+  goGenerate($('flowInput').value);
+});
+$('flowInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); $('flowForm').requestSubmit(); }
+});
+$('flowInput').addEventListener('input', () => {
+  const t = $('flowInput'); t.style.height = 'auto';
+  t.style.height = Math.min(t.scrollHeight, 96) + 'px';
+});
+
+chatForm.addEventListener('submit', e => {
+  e.preventDefault();
+  goGenerate(chatInput.value);
+});
+document.querySelectorAll('#promptChips .chip').forEach(c =>
+  c.addEventListener('click', () => {
+    $('chatInput').value = c.dataset.p;
+    $('chatInput').dispatchEvent(new Event('input'));
+    goGenerate(c.dataset.p);
+  }));
+
+$('btnCopy').addEventListener('click', async () => {
+  if (!state.raw) return;
+  try{ await navigator.clipboard.writeText(unwrapOuterFence(stripEmoji(state.raw), true)); toast('Rencana disalin'); }
+  catch(_){ toast('Clipboard diblokir browser'); }
+});
+$('btnDownload').addEventListener('click', () => {
+  if (!state.raw) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([unwrapOuterFence(stripEmoji(state.raw), true)], { type:'text/markdown' }));
+  a.download = 'plan.md';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* ---------- bind config inputs ---------- */
+['fBaseUrl','fKey','fModel','fModelCustom'].forEach(id =>
+  $(id).addEventListener('change', syncCfgFromInputs));
+$('fKey').addEventListener('input', updateCredStatus);
+
+/* ---------- credentials fold ---------- */
+const credToggle = $('credToggle'), credPanel = $('credPanel');
+function hasCred(){
+  return !!($('fBaseUrl').value.trim() || $('fKey').value.trim());
+}
+function updateCredStatus(){
+  const badge = $('credStatus'), dot = $('credDot'), txt = $('credStatusText');
+  const filled = hasCred();
+  badge.hidden = !filled;
+  dot.className = 'dot' + ($('fKey').value.trim() ? ' ok' : '');
+  txt.textContent = $('fKey').value.trim() ? 'API key terisi' : 'Base URL kustom terisi';
+}
+credToggle.addEventListener('click', () => {
+  const open = credPanel.classList.toggle('open');
+  credToggle.setAttribute('aria-expanded', String(open));
+});
+
+/* ---------- settings modal ---------- */
+const modal = $('settingsModal'), backdrop = $('settingsBackdrop');
+function openSettings(){
+  modal.hidden = false; backdrop.hidden = false;
+  // paksa layout dulu — tanpa ini base state & .show apply di frame yang sama
+  // dan transisi TIDAK pernah jalan (modal muncul instan = "kaku")
+  void modal.offsetWidth; void backdrop.offsetWidth;
+  modal.classList.add('show'); backdrop.classList.add('show');
+  $('settingsClose').focus();
+}
+function closeSettings(){
+  modal.classList.remove('show'); backdrop.classList.remove('show');
+  setTimeout(() => { modal.hidden = true; backdrop.hidden = true; }, 380);
+}
+$('settingsBtn').addEventListener('click', openSettings);
+$('settingsClose').addEventListener('click', closeSettings);
+backdrop.addEventListener('click', closeSettings);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeSettings(); });
+$('heroPill').addEventListener('click', e => { e.preventDefault(); openSettings(); });
+document.querySelectorAll('[data-open-settings]').forEach(a =>
+  a.addEventListener('click', e => { e.preventDefault(); openSettings(); }));
+
+/* ---------- init ---------- */
+if (matchMedia('(max-width:560px)').matches){
+  $('chatInput').placeholder = 'Tulis ide proyekmu…';
+}
+load();
+$('fBaseUrl').value = state.baseUrl || '';
+$('fKey').value = state.key || '';
+if (state.model) $('fModelCustom').value = state.model;
+setProvider(state.provider || 'openai');
+updateHints();
+updateCredStatus();
+</script>
+</body>
+</html>
